@@ -1,3 +1,5 @@
+**语言：** [English](README_EN.md) | 中文
+
 # SiYangUnityEventSystem
 一个 **干净、优雅、零 GC** 的 Unity 事件系统（Event Bus）。
 
