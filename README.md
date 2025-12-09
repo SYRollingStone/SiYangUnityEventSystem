@@ -1,28 +1,34 @@
 # SiYangUnityEventSystem
-一个干净、方便、优雅的Unity事件系统。
+一个 **干净、优雅、零 GC** 的 Unity 事件系统（Event Bus）。
 
-<h1 id="iCUKD">简介</h1>
+## ✨ 特性（Features）
 
-1. 事件系统的发布（Publish）过程 0GC，订阅阶段允许初始化 GC（反射扫描、创建订阅对象），没有装箱与拆箱，没有linq/Foreach，性能友好。
+1. **事件发布（Publish）全程 0GC**  
+   - 订阅阶段允许初始化开销（反射扫描、创建订阅对象）  
+   - 运行时无装箱拆箱、无 LINQ、无 foreach  
+   - 强类型事件分发，性能友好
 
-2. 在任意Class或MonoBehavior脚本中使用。
+2. **可在任意 Class 或 MonoBehaviour 中使用**
 
-3. 事件的注册和取消注册和业务逻辑无关，不应该书写在业务类的代码中。所以提供了2种方式帮助在MonoBehavior的业务代码中不书写注册和取消注册，干净优雅。
-4. 没有任何三方依赖。
+3. **注册/反注册代码与业务逻辑完全解耦**  
+   提供三种监听方式：  
+   - 继承 EventListenerBehaviour  
+   - IAutoEventListener + EventListenerHost  
+   - 手动 Subscribe / Dispose
 
-<h1 id="JzLut">使用</h1>
-<h2 id="lhQ7k">声明一个事件</h2>
-事件名称就是struct的类名。
+4. **无三方依赖，纯 C# 实现**
 
-事件参数就是struct中的参数。
+---
 
-当然也可以用class而不是struct，但推荐用struct，不需要gc。
+# 📦 使用方法
+
+## 1. 声明事件
 
 ```csharp
 public readonly struct TestEvent
 {
-    public readonly  int id;
-    public readonly  string name;
+    public readonly int id;
+    public readonly string name;
 
     public TestEvent(int id, string name)
     {
@@ -32,85 +38,82 @@ public readonly struct TestEvent
 }
 ```
 
-<h2 id="JiwFO">发送事件</h2>
+## 2. 发送事件
 
 ```csharp
-TestEvent testEvent = new TestEvent(1, "Test1");
-SiYangEventBus.Global.Publish(testEvent);
+var evt = new TestEvent(1, "Test1");
+SiYangEventBus.Global.Publish(evt);
 ```
 
-<h2 id="UaftW">监听事件</h2>
-<h3 id="taZnT">基础写法</h3>
-这种是常规用法，就是在OnEnable和OnDisable中注册和取消注册监听。
+## 3. 监听事件
 
-有缺点，就是注册监听和取消注册监听都不是业务逻辑，占用类代码的书写空间，不好。
+---
 
-可以用在任意普通类或继承MonoBehaviour类中：
+## 🟦 方式一：基础写法（手动订阅/取消）
 
 ```csharp
 public class SiYangEventListener3 : MonoBehaviour
+{
+    private IDisposable _subscription;
+
+    private void OnEnable()
     {
-        private IDisposable _subscription;
-        private void OnEnable()
-        {
-            // 在构造函数里订阅事件
-            _subscription = SiYangEventBus.Global.Subscribe<TestEvent>(OnTestEvent);
-        }
-        
-        /// <summary>
-        /// 不再需要这个控制器时，手动取消订阅
-        /// </summary>
-        private void OnDisable()
-        {
-            _subscription?.Dispose();
-        }
-        
-        private void OnTestEvent(TestEvent e)
-        {
-            // 收到事件，写你的逻辑
-            Console.WriteLine($"[SiYangEventListener3] 收到 TestEvent: id={e.id}, name={e.name}");
-        }
+        _subscription = SiYangEventBus.Global.Subscribe<TestEvent>(OnTestEvent);
     }
+
+    private void OnDisable()
+    {
+        _subscription?.Dispose();
+    }
+
+    private void OnTestEvent(TestEvent e)
+    {
+        Debug.Log($"[SiYangEventListener3] id={e.id}, name={e.name}");
+    }
+}
 ```
 
-<h3 id="bT3Cv">继承父类写法</h3>
-EventListenerBehaviour类继承了MonoBehavior，需要使用事件系统的类直接继承EventListenerBehaviour。
+---
 
-事件监听方法被[ListenEvent]标记。
-
-方法传入的参数(TestEvent e)代表监听了什么事件。
+## 🟧 方式二：继承 EventListenerBehaviour（推荐）
 
 ```csharp
-    public class SiYangEventListener1 : EventListenerBehaviour
+public class SiYangEventListener1 : EventListenerBehaviour
+{
+    [ListenEvent]
+    private void TestEventListener(TestEvent e)
     {
-        [ListenEvent]
-        private void TestEventListener(TestEvent e)
-        {
-            Debug.Log($"[SiYangEventListener1]  id:{e.id} name:{e.name}");
-        }
+        Debug.Log($"[SiYangEventListener1] id={e.id}, name={e.name}");
     }
+}
 ```
 
-<h3 id="sjrir">接口写法，更灵活</h3>
+---
+
+## 🟩 方式三：接口写法（最灵活）
 
 ```csharp
-    [RequireComponent(typeof(EventListenerHost))]
-    public class SiYangEventListener2:MonoBehaviour, IAutoEventListener
+[RequireComponent(typeof(EventListenerHost))]
+public class SiYangEventListener2 : MonoBehaviour, IAutoEventListener
+{
+    [ListenEvent]
+    private void TestEventListener(TestEvent e)
     {
-        [ListenEvent]
-        private void TestEventListener(TestEvent e)
-        {
-            Debug.Log($"[SiYangEventListener2]  id:{e.id} name:{e.name}");
-        }
+        Debug.Log($"[SiYangEventListener2] id={e.id}, name={e.name}");
     }
+}
 ```
 
-同时在挂在SiYangEventListener2脚本的物体上挂载EventListenerHost脚本。
+---
+同物体上挂载脚本EventListenerHost
 
 <img width="363" height="438" alt="image" src="https://github.com/user-attachments/assets/d0bb0ac9-af19-4e78-819c-4549f2f564d9" />
 
+# 🎯 小结
 
-EventListenerHost负责在OnEnable中收集同物体上的IAutoEventListener，然后获取标签方法，向EventBus注册事件。
+SiYangUnityEventSystem 的目标是：
 
-也就是说将注册、取消注册的功能收敛到EventListenerHost中，无需在各个类中管理。
-
+- **最小 GC 开销**
+- **清晰的代码结构**
+- **简单优雅的事件使用体验**
+- **灵活的扩展方式**
