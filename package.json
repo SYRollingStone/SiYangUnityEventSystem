@@ -1,7 +1,7 @@
 {
   "name": "com.siyang.siyang-eventbus",
   "displayName": "SiYangUnityEventSystem",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2018.4",
   "description": "一个干净、方便、优雅的Unity事件系统。.",
   "author": {
