@@ -1,0 +1,18 @@
+{
+  "name": "com.siyang.siyang-eventbus",
+  "displayName": "SiYangUnityEventSystem",
+  "version": "1.0.0",
+  "unity": "2018.4",
+  "description": "一个干净、方便、优雅的Unity事件系统。.",
+  "author": {
+    "name": "温世洋",
+    "email": "1364153202@qq.com",
+    "url": "https://github.com/SYRollingStone/SiYangUnityEventSystem"
+  },
+  "keywords": [
+    "event",
+    "eventbus",
+    "observer",
+    "unity"
+  ]
+}
