@@ -107,6 +107,9 @@ EventListenerBehaviour类继承了MonoBehavior，需要使用事件系统的类�
 
 同时在挂在SiYangEventListener2脚本的物体上挂载EventListenerHost脚本。
 
+<img width="363" height="438" alt="image" src="https://github.com/user-attachments/assets/d0bb0ac9-af19-4e78-819c-4549f2f564d9" />
+
+
 EventListenerHost负责在OnEnable中收集同物体上的IAutoEventListener，然后获取标签方法，向EventBus注册事件。
 
 也就是说将注册、取消注册的功能收敛到EventListenerHost中，无需在各个类中管理。
