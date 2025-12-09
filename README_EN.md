@@ -1,3 +1,5 @@
+Language: English | [中文](README_CN.md)
+
 # SiYangUnityEventSystem
 A **clean, elegant, zero-GC** event system (Event Bus) for Unity.
 
