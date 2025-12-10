@@ -3,7 +3,7 @@
   "displayName": "SiYangUnityEventSystem",
   "version": "1.0.1",
   "unity": "2018.4",
-  "description": "一个干净、方便、优雅的Unity事件系统。.",
+  "description": "一个干净、方便、优雅的Unity事件系统。",
   "author": {
     "name": "温世洋",
     "email": "1364153202@qq.com",
@@ -14,5 +14,12 @@
     "eventbus",
     "observer",
     "unity"
+  ],
+  "samples": [
+    {
+      "displayName": "Basic Demo",
+      "description": "演示如何定义事件、订阅事件以及在 MonoBehaviour 中使用 SiYangUnityEventSystem。",
+      "path": "Samples~/BasicDemo"
+    }
   ]
 }

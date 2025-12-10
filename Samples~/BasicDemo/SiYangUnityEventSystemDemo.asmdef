@@ -1,0 +1,16 @@
+{
+    "name": "SiYangUnityEventSystemDemo",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b5f15f884e7965e498d52783cb609998"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
